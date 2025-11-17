@@ -7,38 +7,40 @@ import { StatusBar, Text } from "react-native";
 SplashScreen.preventAutoHideAsync();
 
 export default function LayoutContent() {
-    const { colorScheme } = useTheme();
-    const [loaded, error] = useFonts({
-        "Poppins-Regular": require("../assets/fonts/poppins/Poppins-Regular.ttf"),
-        "Poppins-Bold": require("../assets/fonts/poppins/Poppins-Bold.ttf"),
-        "Poppins-Medium": require("../assets/fonts/poppins/Poppins-Medium.ttf"),
-        "Poppins-SemiBold": require("../assets/fonts/poppins/Poppins-SemiBold.ttf"),
-        "Poppins-Black": require("../assets/fonts/poppins/Poppins-Black.ttf"),
-        "Poppins-ExtraBold": require("../assets/fonts/poppins/Poppins-ExtraBold.ttf"),
-        "Poppins-Light": require("../assets/fonts/poppins/Poppins-Light.ttf"),
-        "Poppins-Thin": require("../assets/fonts/poppins/Poppins-Thin.ttf"),
-      });
-    
-      useEffect(() => {
-        if (loaded || error) {
-          SplashScreen.hideAsync();
-        }
-      }, [loaded, error]);
-    
-      if (!loaded && !error) {
-        return null;
-      }
-    
-      if (error) {
-        return <Text>Error loading fonts</Text>;
-      }
+  const { colorScheme } = useTheme();
+  const [loaded, error] = useFonts({
+    "Poppins-Regular": require("../assets/fonts/poppins/Poppins-Regular.ttf"),
+    "Poppins-Bold": require("../assets/fonts/poppins/Poppins-Bold.ttf"),
+    "Poppins-Medium": require("../assets/fonts/poppins/Poppins-Medium.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/poppins/Poppins-SemiBold.ttf"),
+    "Poppins-Black": require("../assets/fonts/poppins/Poppins-Black.ttf"),
+    "Poppins-ExtraBold": require("../assets/fonts/poppins/Poppins-ExtraBold.ttf"),
+    "Poppins-Light": require("../assets/fonts/poppins/Poppins-Light.ttf"),
+    "Poppins-Thin": require("../assets/fonts/poppins/Poppins-Thin.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
+  if (error) {
+    return <Text>Error loading fonts</Text>;
+  }
   return (
     <>
-    <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+      <StatusBar
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+      />
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
     </>
   );
 }

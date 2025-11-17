@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+      <Text style={styles.title}>Home</Text>w
     </SafeAreaView>
   );
 }
