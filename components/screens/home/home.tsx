@@ -1,17 +1,67 @@
+import CarDetailCard from "@/components/ui/car-details-card";
 import { layoutTheme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
-import { Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 export default function Home() {
   const { colorScheme } = useTheme();
   const styles = getStyles(colorScheme);
+  const { width } = useWindowDimensions();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Home</Text>w
-    </SafeAreaView>
+    <>
+      <View
+        style={{
+          ...styles.container,
+          width: width,
+        }}
+      >
+        <View style={styles.content}>
+          <View style={{ ...styles.searchInput, width: width - 50 }}>
+            <Ionicons
+              name="search"
+              size={20}
+              color="#888"
+              style={{
+                position: "absolute",
+                left: 10,
+                zIndex: 10,
+              }}
+            />
+
+            <TextInput
+              placeholder="Search"
+              placeholderTextColor="#888"
+              style={{
+                paddingLeft: 20,
+              }}
+            />
+          </View>
+        </View>
+        <View style={styles.content}>
+          <View style={styles.details}>
+            <View style={styles.detailsHeader}>
+              <Text style={styles.detailsTitle}>Hot deals</Text>
+              <Link href={"/"} style={styles.detailsLink}>
+                View all...
+              </Link>
+            </View>
+            <CarDetailCard />
+          </View>
+        </View>
+      </View>
+      <StatusBar barStyle={"light-content"} />
+    </>
   );
 }
 
@@ -19,14 +69,64 @@ const getStyles = (theme: ThemeType) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      justifyContent: "space-between",
+      alignItems: "center",
+      fontFamily: layoutTheme.fonts.poppins.regular,
+      backgroundColor:
+        theme === "dark"
+          ? layoutTheme.colors.background.dark
+          : layoutTheme.colors.background.dark,
+    },
+    content: {
+      flex: 1,
+      width: "100%",
+      justifyContent: "center",
+      height: 50,
+      alignItems: "center",
+    },
+    header: {
+      width: 100,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: theme === "dark" ? layoutTheme.colors.background.dark : layoutTheme.colors.background.primary,
+    },
+    searchInput: {
+      position: "relative",
+      justifyContent: "center",
+      backgroundColor: "#fff",
+      padding: 20,
+      borderRadius: 10,
+      fontSize: 18,
+    },
+    details: {
+      backgroundColor: "#fff",
+      flex: 1,
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 30,
+    },
+    detailsHeader: {
+      marginBottom: 20,
+      width: "100%",
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    detailsTitle: {
+      fontFamily: layoutTheme.fonts.poppins.medium,
+      fontSize: 20
+    },
+    detailsLink: {
+      fontFamily: layoutTheme.fonts.poppins.medium,
+      fontSize: 20,
+      color: layoutTheme.colors.primary[500],
     },
     title: {
       fontSize: 20,
       fontWeight: "bold",
-      color: theme === "dark" ? layoutTheme.colors.text.inverse : layoutTheme.colors.text.primary,
+      color:
+        theme === "dark"
+          ? layoutTheme.colors.text.inverse
+          : layoutTheme.colors.text.primary,
       fontFamily: layoutTheme.fonts.poppins.bold,
     },
   });

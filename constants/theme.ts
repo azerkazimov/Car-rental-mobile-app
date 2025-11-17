@@ -36,6 +36,7 @@ export const layoutTheme = {
         background: {
             primary: "#ffffff",
             secondary: "#f6f8fa",
+            silver: "#F5F6FA",
             tertiary: "#eaeef2",
             dark: "#0d1117",
             darkSecondary: "#161b22",
