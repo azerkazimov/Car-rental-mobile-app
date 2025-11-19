@@ -1,19 +1,19 @@
-import AuthForm from "@/components/screens/auth-form/signup-form";
 import { layoutTheme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
 import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
+    StatusBar,
+    StyleSheet,
+    Text,
+    useWindowDimensions,
+    View,
 } from "react-native";
 
+import { Link } from "expo-router";
+import AuthForm from "@/components/screens/auth-form/signup-form";
 
-export default function Signup() {
+export default function Signin() {
   const { colorScheme } = useTheme();
   const styles = getStyles(colorScheme);
   const { width } = useWindowDimensions();
@@ -34,12 +34,12 @@ export default function Signup() {
           />
         </View>
         <View style={styles.bottomContent}>
-          <AuthForm title="Sign up to join" />
+            <AuthForm title="Sign in to your account" />
         </View>
         <Text style={styles.footer}>
-          Have an account?
-          <Link href="/signin/page" style={styles.footerLink}>
-            Sign in
+          {`Don't have an account?`} 
+          <Link href="/signup/page" style={styles.footerLink}>
+            Sign up
           </Link>
         </Text>
       </View>
@@ -81,12 +81,12 @@ const getStyles = (theme: ThemeType) =>
       alignItems: "center",
     },
     footer: {
-      textAlign: "center",
-      marginBottom: 56,
-      fontFamily: layoutTheme.fonts.poppins.semiBold,
-      color: layoutTheme.colors.text.gray,
+        textAlign: "center",
+        marginBottom: 56,
+        fontFamily: layoutTheme.fonts.poppins.semiBold,
+        color: layoutTheme.colors.text.gray,
     },
     footerLink: {
-      color: layoutTheme.colors.text.link,
+        color: layoutTheme.colors.text.link,
     },
   });

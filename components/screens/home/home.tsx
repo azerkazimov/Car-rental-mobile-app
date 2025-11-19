@@ -12,6 +12,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import BrandLogo from "./components/brand-logo";
 
 export default function Home() {
   const { colorScheme } = useTheme();
@@ -49,6 +50,7 @@ export default function Home() {
           </View>
         </View>
         <View style={styles.content}>
+          <BrandLogo />
           <View style={styles.details}>
             <View style={styles.detailsHeader}>
               <Text style={styles.detailsTitle}>Hot deals</Text>
@@ -60,6 +62,7 @@ export default function Home() {
           </View>
         </View>
       </View>
+
       <StatusBar barStyle={"light-content"} />
     </>
   );
@@ -78,6 +81,7 @@ const getStyles = (theme: ThemeType) =>
           : layoutTheme.colors.background.dark,
     },
     content: {
+      position: "relative",
       flex: 1,
       width: "100%",
       justifyContent: "center",
@@ -104,6 +108,7 @@ const getStyles = (theme: ThemeType) =>
       justifyContent: "center",
       alignItems: "center",
       padding: 30,
+      paddingTop: 40,
     },
     detailsHeader: {
       marginBottom: 20,
@@ -113,7 +118,7 @@ const getStyles = (theme: ThemeType) =>
     },
     detailsTitle: {
       fontFamily: layoutTheme.fonts.poppins.medium,
-      fontSize: 20
+      fontSize: 20,
     },
     detailsLink: {
       fontFamily: layoutTheme.fonts.poppins.medium,

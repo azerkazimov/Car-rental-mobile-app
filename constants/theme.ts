@@ -34,10 +34,11 @@ export const layoutTheme = {
 
         // Semantic colors
         background: {
-            primary: "#ffffff",
+            primary: "#F9B401",
             secondary: "#f6f8fa",
             silver: "#F5F6FA",
             tertiary: "#eaeef2",
+            light: "#ffffff",
             dark: "#0d1117",
             darkSecondary: "#161b22",
             darkTertiary: "#21262d",
@@ -49,6 +50,7 @@ export const layoutTheme = {
             tertiary: "#808080",
             inverse: "#ffffff",
             muted: "#999999",
+            gray: "#c4c4c4",
             link: "#F9B401",
             linkHover: "#d89e01",
         },

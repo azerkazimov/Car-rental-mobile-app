@@ -64,7 +64,7 @@ const getStyles = (theme: ThemeType) =>
       backgroundColor:
         theme === "dark"
           ? layoutTheme.colors.background.dark
-          : layoutTheme.colors.background.primary,
+          : layoutTheme.colors.background.light,
     },
 
     container: {
