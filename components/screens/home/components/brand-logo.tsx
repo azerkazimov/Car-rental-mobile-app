@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     top: -50,
     left: 0,
     zIndex: 1000,
+    height: 100,
   },
   listContainer: {
     gap: 12,
@@ -41,11 +42,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    boxShadow: "0px 5px 5px 0px rgba(0, 0, 0, 0.1)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   brandLogoImage: {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 60,
     resizeMode: "contain",
   },
 });
