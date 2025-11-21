@@ -42,6 +42,8 @@ export default function LayoutContent() {
         <Stack.Screen name="signup/page" options={{ headerShown: false }} />
         <Stack.Screen name="signin/page" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="[brand]/page" options={{ headerShown: false }} />
+        <Stack.Screen name="car/[model]/page" options={{ headerShown: false }} />
       </Stack>
     </>
   );

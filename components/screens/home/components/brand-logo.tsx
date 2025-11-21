@@ -1,6 +1,7 @@
 import { layoutTheme } from "@/constants/theme";
 import { carLogos } from "@/data/car-logo";
 import { Image } from "expo-image";
+import { Link } from "expo-router";
 import { FlatList, StyleSheet, View } from "react-native";
 
 export default function BrandLogo() {
@@ -15,9 +16,14 @@ export default function BrandLogo() {
         keyExtractor={(item) => item.slug}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
-          <View style={styles.brandLogo}>
-            <Image source={{ uri: item.image.source }} style={styles.brandLogoImage} />
-          </View>
+          <Link href={`/${item.slug}/page`}>
+            <View style={styles.brandLogo}>
+              <Image
+                source={{ uri: item.image.source }}
+                style={styles.brandLogoImage}
+              />
+            </View>
+          </Link>
         )}
       />
     </View>
@@ -25,10 +31,7 @@ export default function BrandLogo() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: -50,
-    left: 0,
+  container: {   
     zIndex: 1000,
     height: 100,
   },

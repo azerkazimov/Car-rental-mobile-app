@@ -19,6 +19,7 @@ export default function Home() {
   const styles = getStyles(colorScheme);
   const { width } = useWindowDimensions();
 
+
   return (
     <>
       <View
@@ -50,7 +51,10 @@ export default function Home() {
           </View>
         </View>
         <View style={styles.content}>
+          <View style={styles.brandLogoContainer}>
+
           <BrandLogo />
+          </View>
           <View style={styles.details}>
             <View style={styles.detailsHeader}>
               <Text style={styles.detailsTitle}>Hot deals</Text>
@@ -100,6 +104,11 @@ const getStyles = (theme: ThemeType) =>
       padding: 20,
       borderRadius: 10,
       fontSize: 18,
+    },
+    brandLogoContainer: {
+      position: "absolute",
+      top: -50,
+      left: 0,
     },
     details: {
       backgroundColor: "#fff",
