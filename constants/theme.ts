@@ -40,6 +40,7 @@ export const layoutTheme = {
             tertiary: "#eaeef2",
             light: "#ffffff",
             dark: "#0d1117",
+            black: "#000000",
             darkSecondary: "#161b22",
             darkTertiary: "#21262d",
         },
