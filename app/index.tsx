@@ -1,10 +1,17 @@
 import { layoutTheme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 export default function Index() {
   const { colorScheme } = useTheme();
@@ -13,8 +20,25 @@ export default function Index() {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const isAuthenticated = await AsyncStorage.getItem("isAuthenticated");
+        if (isAuthenticated === "true") {
+          router.replace("/(tabs)");
+        } else {
+          router.replace("/signin/page");
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        Alert.alert(
+          "Error",
+          "An error occurred during authentication. Please try again."
+        );
+      }
+    };
+
     const timer = setTimeout(() => {
-      router.replace("/signin/page");
+      checkAuthentication();
     }, 1000);
 
     return () => clearTimeout(timer);

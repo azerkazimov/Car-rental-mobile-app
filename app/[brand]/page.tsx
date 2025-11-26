@@ -4,9 +4,17 @@ import { layoutTheme } from "@/constants/theme";
 import { carModels } from "@/data/car-models";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
-import { useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BrandPage() {
@@ -14,11 +22,12 @@ export default function BrandPage() {
   const styles = getStyles(colorScheme);
   const { brand } = useLocalSearchParams();
   const [reflesh, setReflesh] = useState(false);
+  const router = useRouter();
 
+  const models = brand
+    ? carModels.filter((item) => item.brandSlug === brand)
+    : carModels;
 
-  const models = carModels.filter((item) => item.brandSlug === brand);
-  // const models = [];
-  
   const handleReflesh = () => {
     setReflesh(true);
 
@@ -27,23 +36,18 @@ export default function BrandPage() {
     }, 1000);
   };
 
-
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color="black" />
+          </TouchableOpacity>
           <Text style={styles.title}>Brands</Text>
+        </View>
+        <View style={styles.header}>
           <BrandLogo />
         </View>
-        {/* <ScrollView
-          style={styles.modelsContainer}
-          contentContainerStyle={styles.modelsContainerContent}
-        >
-          {models &&
-            models.map((model) => {
-              return <CarDetailCard key={model.id} model={model} />;
-            })}
-        </ScrollView> */}
 
         <FlatList
           data={models}
@@ -72,6 +76,12 @@ const getStyles = (theme: ThemeType) =>
         theme === "dark"
           ? layoutTheme.colors.background.dark
           : layoutTheme.colors.background.light,
+    },
+    titleContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 20,
+      marginBottom: 20,
     },
     header: {
       position: "relative",

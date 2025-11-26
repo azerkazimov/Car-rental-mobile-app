@@ -4,7 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
+import UUID from "react-native-uuid";
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -13,7 +15,6 @@ import {
 } from "react-native";
 import { registerSchema, RegisterSchemaType } from "./signup-form.schema";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 
 export default function SignupForm() {
   const router = useRouter();
@@ -28,11 +29,23 @@ export default function SignupForm() {
   });
 
   const onSubmit = (data: RegisterSchemaType) => {
-    console.log("Submission:", data);
-    AsyncStorage.setItem("user", JSON.stringify(data));
+    const userData = {
+      id: UUID.v4() as string,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      isAuthenticated: false,
+    };
+    console.log("Submission:", userData);
 
 
-    router.replace("/signin/page");
+    try {
+      AsyncStorage.setItem("user", JSON.stringify(userData));
+      router.replace("/signin/page");
+    } catch (error) {
+      console.error("Sign up error:", error);
+      Alert.alert("Error", "An error occurred during sign up. Please try again.");
+    }
   };
 
   return (

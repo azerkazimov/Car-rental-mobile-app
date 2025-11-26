@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -13,10 +14,11 @@ import {
   View,
 } from "react-native";
 import { loginSchema, LoginSchemaType } from "./signin-form.schema";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function SigninForm() {
   const router = useRouter();
-
+  const { setUser } = useAuthStore();
 
   const { width } = useWindowDimensions();
   const {
@@ -27,14 +29,34 @@ export default function SigninForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginSchemaType) => {
-    console.log("Submission:", data);
-    const user = localStorage.getItem("user");
-    if (user) {
-      const userData = JSON.parse(user);
-      if (userData.email === data.email && userData.password === data.password) {
-        router.replace("/(tabs)");
+  const onSubmit = async (data: LoginSchemaType) => {
+    try {
+      const user = await AsyncStorage.getItem("user");
+
+      if (!user) {
+        Alert.alert("Error", "No user found. Please sign up first.");
+        return;
       }
+
+      const userData = JSON.parse(user);
+
+      if (
+        userData.email === data.email &&
+        userData.password === data.password
+      ) {
+        console.log("User logged in", userData);
+        AsyncStorage.setItem("isAuthenticated", "true");
+        setUser(userData);
+        router.replace("/(tabs)");
+      } else {
+        Alert.alert("Error", "Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Sign in error:", error);
+      Alert.alert(
+        "Error",
+        "An error occurred during sign in. Please try again."
+      );
     }
   };
 
@@ -83,7 +105,7 @@ export default function SigninForm() {
         )}
       />
 
-      <Button onPress={handleSubmit(onSubmit)}>Sign up</Button>
+      <Button onPress={handleSubmit(onSubmit)}>Sign in</Button>
       <Text style={styles.orText}>or</Text>
       <Button variant="secondary" onPress={handleSubmit(onSubmit)}>
         <Ionicons

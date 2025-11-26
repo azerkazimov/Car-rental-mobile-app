@@ -1,5 +1,6 @@
 import CarDetailCard from "@/components/ui/car-details-card";
 import { layoutTheme } from "@/constants/theme";
+import { carModels } from "@/data/car-models";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +19,6 @@ export default function Home() {
   const { colorScheme } = useTheme();
   const styles = getStyles(colorScheme);
   const { width } = useWindowDimensions();
-
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function Home() {
           <View style={styles.details}>
             <View style={styles.detailsHeader}>
               <Text style={styles.detailsTitle}>Hot deals</Text>
-              <Link href={"/"} style={styles.detailsLink}>
+              <Link href={`/${carModels[0]?.brandSlug}/page`} style={styles.detailsLink}>
                 View all...
               </Link>
             </View>
