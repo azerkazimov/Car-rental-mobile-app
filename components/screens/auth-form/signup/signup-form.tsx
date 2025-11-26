@@ -2,6 +2,7 @@ import Button from "@/components/ui/button";
 import { layoutTheme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
   StyleSheet,
@@ -10,31 +11,54 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { loginSchema, LoginSchemaType } from "./signup-form.schema";
-import { useRouter } from "expo-router";
+import { registerSchema, RegisterSchemaType } from "./signup-form.schema";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function AuthForm({ title }: { title: string }) {
+
+export default function SignupForm() {
   const router = useRouter();
+
   const { width } = useWindowDimensions();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginSchemaType>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+  } = useForm<RegisterSchemaType>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: LoginSchemaType) => {
+  const onSubmit = (data: RegisterSchemaType) => {
     console.log("Submission:", data);
-    router.replace("/(tabs)");
+    AsyncStorage.setItem("user", JSON.stringify(data));
+
+
+    router.replace("/signin/page");
   };
+
   return (
     <View style={{ ...styles.container, width: width - 50 }}>
-      <Text style={styles.title}> {title}</Text>
+      <Text style={styles.title}> Sign up to join</Text>
+
+      {/* Name */}
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { value, onChange, onBlur } }) => (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            {errors.name && (
+              <Text style={styles.error}>{errors.name?.message}</Text>
+            )}
+          </>
+        )}
+      />
+
       {/* Email */}
       <Controller
         control={control}

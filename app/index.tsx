@@ -14,7 +14,7 @@ export default function Index() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/(tabs)");
+      router.replace("/signin/page");
     }, 1000);
 
     return () => clearTimeout(timer);

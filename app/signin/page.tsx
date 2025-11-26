@@ -3,15 +3,16 @@ import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
 import { Image } from "expo-image";
 import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    useWindowDimensions,
-    View,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
 } from "react-native";
 
+
 import { Link } from "expo-router";
-import AuthForm from "@/components/screens/auth-form/signup-form";
+import SigninForm from "@/components/screens/auth-form/signin/signin-form";
 
 export default function Signin() {
   const { colorScheme } = useTheme();
@@ -34,7 +35,7 @@ export default function Signin() {
           />
         </View>
         <View style={styles.bottomContent}>
-            <AuthForm title="Sign in to your account" />
+            <SigninForm />
         </View>
         <Text style={styles.footer}>
           {`Don't have an account?`} 

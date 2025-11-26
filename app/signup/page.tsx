@@ -1,4 +1,4 @@
-import AuthForm from "@/components/screens/auth-form/signup-form";
+import SignupForm from "@/components/screens/auth-form/signup/signup-form";
 import { layoutTheme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { ThemeType } from "@/types/theme-types";
@@ -11,7 +11,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-
 
 export default function Signup() {
   const { colorScheme } = useTheme();
@@ -34,7 +33,7 @@ export default function Signup() {
           />
         </View>
         <View style={styles.bottomContent}>
-          <AuthForm title="Sign up to join" />
+          <SignupForm />
         </View>
         <Text style={styles.footer}>
           Have an account?
