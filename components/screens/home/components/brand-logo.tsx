@@ -2,36 +2,59 @@ import { layoutTheme } from "@/constants/theme";
 import { carLogos } from "@/data/car-logo";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
-import { FlatList, StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
-export default function BrandLogo() {
+export default function BrandLogo({ selected }: { selected?: string }) {
   const data = carLogos;
+  const listRef = useRef<FlatList>(null);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(
+    selected || null
+  );
+  const onSelectBrand = (brand: string, index: number) => {
+    setSelectedBrand(brand);
+    listRef.current?.scrollToIndex({ index, animated: true });
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
+        ref={listRef}
         data={data}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.slug}
         contentContainerStyle={styles.listContainer}
-        renderItem={({ item }) => (
-          <Link href={`/${item.slug}/page`}>
-            <View style={styles.brandLogo}>
-              <Image
-                source={{ uri: item.image.source }}
-                style={styles.brandLogoImage}
-              />
-            </View>
-          </Link>
-        )}
+        renderItem={({ item, index }) => {
+          const isActive = selectedBrand === item.slug;
+          return (
+            <TouchableOpacity onPress={() => onSelectBrand(item.slug, index)}>
+              <Link href={`/${item.slug}/page`}>
+                <View
+                  style={[styles.brandLogo, isActive && styles.activeBrandLogo]}
+                >
+                  <Image
+                    source={{ uri: item.image.source }}
+                    style={styles.brandLogoImage}
+                  />
+                </View>
+              </Link>
+            </TouchableOpacity>
+          );
+        }}
+        getItemLayout={(data, index) => ({
+          length: 80,
+          offset: 80 * index,
+          index,
+        })}
+        initialScrollIndex={data.findIndex((item) => item.slug === selected)}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {   
+  container: {
     zIndex: 1000,
     height: 100,
   },
@@ -53,6 +76,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  activeBrandLogo: {
+    backgroundColor: layoutTheme.colors.primary[500],
   },
   brandLogoImage: {
     width: 60,

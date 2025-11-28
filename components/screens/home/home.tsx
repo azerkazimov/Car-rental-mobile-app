@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import BrandLogo from "./components/brand-logo";
+import CarCatalog from "../car-catalog/car.catalog";
 
 export default function Home() {
   const { colorScheme } = useTheme();
@@ -62,7 +63,8 @@ export default function Home() {
                 View all...
               </Link>
             </View>
-            <CarDetailCard />
+            {/* <CarDetailCard /> */}
+            <CarCatalog />
           </View>
         </View>
       </View>

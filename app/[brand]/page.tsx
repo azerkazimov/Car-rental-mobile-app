@@ -45,15 +45,17 @@ export default function BrandPage() {
           </TouchableOpacity>
           <Text style={styles.title}>Brands</Text>
         </View>
-        <View style={styles.header}>
-          <BrandLogo />
-        </View>
 
         <FlatList
           data={models}
           renderItem={({ item }) => <CarDetailCard model={item} />}
           keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={<Text>No items found</Text>}
+          ListHeaderComponent={
+            <View style={styles.header}>
+              <BrandLogo selected={brand as string} />
+            </View>
+          }
           refreshing={reflesh}
           onRefresh={handleReflesh}
           contentContainerStyle={styles.modelsContainerContent}
