@@ -1,8 +1,9 @@
 import { layoutTheme } from "@/constants/theme";
 import { carModels } from "@/data/car-models";
+import { useBookingStore } from "@/store/booking-store";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ScrollView,
   StyleSheet,
@@ -16,7 +17,15 @@ export default function CarPage() {
   const { model } = useLocalSearchParams();
   const router = useRouter();
   const modelData = carModels.find((item) => item.model === model);
+  const { setSelectedCar } = useBookingStore();
   console.log(modelData);
+  
+  const handleBookNow = () => {
+    if (modelData) {
+      setSelectedCar(modelData);
+      router.push("/payment/page");
+    }
+  };
 
   if (!modelData) {
     return (
@@ -110,9 +119,9 @@ export default function CarPage() {
             <Text style={styles.totalPrice}>
               ${modelData.pricePerDay.toFixed(2)}
             </Text>
-            <Link href="/payment/page" style={styles.bookButton}>
+            <TouchableOpacity onPress={handleBookNow} style={styles.bookButton}>
               <Text style={styles.bookButtonText}>Book now</Text>
-            </Link>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>

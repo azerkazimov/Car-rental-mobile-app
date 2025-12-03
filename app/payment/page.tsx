@@ -3,11 +3,12 @@ import PaymentForm from "@/components/screens/payment/payment-form";
 import Button from "@/components/ui/button";
 import { layoutTheme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
+import { useCardStore } from "@/store/card-store";
 import { ThemeType } from "@/types/theme-types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 type PaymentMethod = "mastercard" | "visa" | "paypal";
 
@@ -15,11 +16,19 @@ export default function PaymentPage() {
   const router = useRouter();
   const { colorScheme } = useTheme();
   const styles = getStyles(colorScheme);
-  const [selectedPayment, setSelectedPayment] =
-    useState<PaymentMethod >();
+  const { cardNumber, expiry, cvv } = useCardStore();
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>();
 
   const handlePaymentSelect = (method: PaymentMethod) => {
     setSelectedPayment(method);
+  };
+
+  const handlePayNow = () => {
+    if (selectedPayment && cardNumber && expiry && cvv) {
+      router.push("/payment/confirm/page");
+    } else {
+      Alert.alert("Please select a payment method and fill in all the fields");
+    }
   };
 
   return (
@@ -70,7 +79,7 @@ export default function PaymentPage() {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => {}}>
+          <Button onPress={handlePayNow}>
             <Text style={styles.buttonText}>Pay now</Text>
           </Button>
         </View>

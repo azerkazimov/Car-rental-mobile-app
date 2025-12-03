@@ -4,6 +4,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { StatusBar, Text } from "react-native";
 
+
 SplashScreen.preventAutoHideAsync();
 
 export default function LayoutContent() {
@@ -45,6 +46,9 @@ export default function LayoutContent() {
         <Stack.Screen name="[brand]/page" options={{ headerShown: false }} />
         <Stack.Screen name="car/[model]/page" options={{ headerShown: false }} />
         <Stack.Screen name="payment/page" options={{ headerShown: false }} />
+        <Stack.Screen name="driving-licence/page" options={{ headerShown: false }} />
+        <Stack.Screen name="personal-data/page" options={{ headerShown: false }} />
+        <Stack.Screen name="payment/confirm/page" options={{ headerShown: false }} />
       </Stack>
     </>
   );
