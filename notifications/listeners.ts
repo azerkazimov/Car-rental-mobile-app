@@ -12,7 +12,7 @@ export function setupNotificationListeners() {
   notificationListener = Notifications.addNotificationReceivedListener((notification) => {
     console.log('Notification received:', notification);
     
-    const { title, body, data } = notification.request.content;
+    const { data } = notification.request.content;
     
     // Handle different notification types based on data
     if (data?.type === 'booking_confirmed') {
@@ -31,7 +31,7 @@ export function setupNotificationListeners() {
     if (data?.type === 'booking_confirmed') {
       // Navigate to bookings or home screen
       if (data?.bookingId) {
-        router.push('/(tabs)/');
+        router.push('/(tabs)');
       }
     } else if (data?.screen) {
       // Navigate to specific screen if provided
@@ -43,12 +43,12 @@ export function setupNotificationListeners() {
 // Remove notification listeners (call this on component unmount)
 export function removeNotificationListeners() {
   if (notificationListener) {
-    Notifications.removeNotificationSubscription(notificationListener);
+    notificationListener.remove();
     notificationListener = undefined;
   }
   
   if (responseListener) {
-    Notifications.removeNotificationSubscription(responseListener);
+    responseListener.remove();
     responseListener = undefined;
   }
 }
