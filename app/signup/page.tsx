@@ -5,9 +5,14 @@ import { ThemeType } from "@/types/theme-types";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -18,31 +23,47 @@ export default function Signup() {
   const { width } = useWindowDimensions();
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.topContent}>
-          <Image
-            source={require("@/assets/images/logo.png")}
-            style={{ ...styles.logo, width: width - 50, height: width - 50 }}
-          />
-          <View
-            style={{
-              ...styles.circle,
-              width: width + 90,
-              height: width + 90,
-            }}
-          />
-        </View>
-        <View style={styles.bottomContent}>
-          <SignupForm />
-        </View>
-        <Text style={styles.footer}>
-          Have an account?
-          <Link href="/signin/page" style={styles.footerLink}>
-            Sign in
-          </Link>
-        </Text>
-      </View>
-      <StatusBar barStyle={"light-content"} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.container}>
+              <View style={styles.topContent}>
+                <Image
+                  source={require("@/assets/images/logo.png")}
+                  style={{
+                    ...styles.logo,
+                    width: width - 50,
+                    height: width - 50,
+                  }}
+                />
+                <View
+                  style={{
+                    ...styles.circle,
+                    width: width + 90,
+                    height: width + 90,
+                  }}
+                />
+              </View>
+              <View style={styles.bottomContent}>
+                <SignupForm />
+              </View>
+              <Text style={styles.footer}>
+                Have an account?
+                <Link href="/signin/page" style={styles.footerLink}>
+                  Sign in
+                </Link>
+              </Text>
+            </View>
+            <StatusBar barStyle={"light-content"} />
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </>
   );
 }

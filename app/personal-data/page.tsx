@@ -5,7 +5,7 @@ import { ThemeType } from "@/types/theme-types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function PersonalDataPage() {
   const { colorScheme } = useTheme();
@@ -14,7 +14,7 @@ export default function PersonalDataPage() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -25,7 +25,7 @@ export default function PersonalDataPage() {
 
         {/* Content */}
         <PersonalData />
-      </SafeAreaView>
+      </View>
       <StatusBar
         barStyle="light-content"
         backgroundColor={layoutTheme.colors.background.black}
@@ -46,6 +46,7 @@ const getStyles = (theme: ThemeType) =>
       paddingHorizontal: 20,
       paddingVertical: 15,
       backgroundColor: layoutTheme.colors.background.black,
+      height: "20%",
     },
     backButton: {
       marginRight: 20,

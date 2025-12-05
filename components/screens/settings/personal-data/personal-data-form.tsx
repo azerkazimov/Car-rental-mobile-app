@@ -1,34 +1,31 @@
 import Button from "@/components/ui/button";
 import { layoutTheme } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+    Alert,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
-import {
-  drivingLicenceSchema,
-  DrivingLicenceSchemaType,
-} from "./driving-licence-form.schema";
 
-export default function DrivingLicenceForm() {
+import {
+    personalDataSchema,
+    PersonalDataSchemaType,
+} from "./personal-data.schema";
+
+export default function PersonalDataForm() {
   const router = useRouter();
-  const [licenceImage, setLicenceImage] = useState<string | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -36,112 +33,21 @@ export default function DrivingLicenceForm() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<DrivingLicenceSchemaType>({
-    resolver: zodResolver(drivingLicenceSchema),
-    defaultValues: {
-      licenceNumber: "",
-      expiryDate: "",
-      licencePhoto: null,
-    },
+  } = useForm<PersonalDataSchemaType>({
+    resolver: zodResolver(personalDataSchema),
   });
 
-  // Format date input as DD/MM/YYYY
-  const formatDate = (text: string) => {
-    const cleaned = text.replace(/\D/g, "");
-    let formatted = cleaned;
-    if (cleaned.length >= 2) {
-      formatted = cleaned.slice(0, 2);
-      if (cleaned.length >= 2) {
-        formatted += "/" + cleaned.slice(2, 4);
-      }
-      if (cleaned.length >= 4) {
-        formatted += "/" + cleaned.slice(4, 8);
-      }
-    }
-    return formatted;
-  };
-
-  // Pick image from gallery or camera
-  const pickImage = async () => {
-    // Request permissions
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      Alert.alert(
-        "Permission Required",
-        "Permission to access camera roll is required!"
-      );
-      return;
-    }
-
-    // Show action sheet for camera or gallery
-    Alert.alert(
-      "Upload Licence Photo",
-      "Choose an option",
-      [
-        {
-          text: "Take Photo",
-          onPress: async () => {
-            const cameraPermission =
-              await ImagePicker.requestCameraPermissionsAsync();
-            if (cameraPermission.granted) {
-              const result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-              });
-
-              if (!result.canceled) {
-                setLicenceImage(result.assets[0].uri);
-                setValue("licencePhoto", result.assets[0].uri);
-              }
-            }
-          },
-        },
-        {
-          text: "Choose from Gallery",
-          onPress: async () => {
-            const result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
-              allowsEditing: true,
-              aspect: [4, 3],
-              quality: 1,
-            });
-
-            if (!result.canceled) {
-              setLicenceImage(result.assets[0].uri);
-              setValue("licencePhoto", result.assets[0].uri);
-            }
-          },
-        },
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const onSubmit = async (data: DrivingLicenceSchemaType) => {
+  const onSubmit = async (data: PersonalDataSchemaType) => {
     try {
       setIsLoading(true);
-
-      // Validate that photo is uploaded
-      if (!licenceImage) {
-        Alert.alert("Error", "Please upload your licence photo");
-        setIsLoading(false);
-        return;
-      }
+     
 
       // Save to AsyncStorage
-      await AsyncStorage.setItem("drivingLicence", JSON.stringify(data));
+      await AsyncStorage.setItem("personalData", JSON.stringify(data));
 
       Alert.alert(
         "Success",
-        "Driving licence information saved successfully!",
+        "Personal data saved successfully!",
         [
           {
             text: "OK",
@@ -152,7 +58,7 @@ export default function DrivingLicenceForm() {
         ]
       );
     } catch (error) {
-      console.error("Error saving driving licence:", error);
+      console.error("Error saving personal data:", error);
       Alert.alert(
         "Error",
         "Failed to save driving licence information. Please try again."
@@ -161,6 +67,20 @@ export default function DrivingLicenceForm() {
       setIsLoading(false);
     }
   };
+
+  const getPersonalData = async ()=>{
+    const personalData = JSON.parse(await AsyncStorage.getItem("personalData") || "{}");
+    if(personalData){
+      setValue("fullName", personalData.fullName || "");
+      setValue("phone", personalData.phone || "");
+      setValue("address", personalData.address || "");
+      setValue("idNumber", personalData.idNumber || "");
+    }
+  }
+
+  useEffect(()=>{
+    getPersonalData();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -178,81 +98,116 @@ export default function DrivingLicenceForm() {
               <View style={styles.progressFill} />
             </View>
 
-            {/* Driving Licence Section */}
+            {/* Personal Data Section */}
             <View style={styles.formSection}>
-              <Text style={styles.sectionTitle}>Driving Licence</Text>
+              <Text style={styles.sectionTitle}>Personal Data</Text>
 
-              {/* Licence Number Input */}
+              {/* Full Name Input */}
               <Controller
                 control={control}
-                name="licenceNumber"
+                name="fullName"
                 render={({ field: { value, onChange, onBlur } }) => (
                   <View style={styles.inputWrapper}>
                     <TextInput
                       style={styles.input}
-                      placeholder="Licence Number"
+                      placeholder="Full Name"
                       placeholderTextColor="#D1D1D1"
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
+                      onFocus={() => setValue("fullName", "")}
                     />
-                    {errors.licenceNumber && (
+                    {errors.fullName && (
                       <Text style={styles.errorText}>
-                        {errors.licenceNumber.message}
+                        {errors.fullName.message}
                       </Text>
                     )}
                   </View>
                 )}
               />
 
-              {/* Expiry Date Input */}
+              {/* Phone Input */}
               <Controller
                 control={control}
-                name="expiryDate"
+                name="phone"
                 render={({ field: { value, onChange, onBlur } }) => (
                   <View style={styles.inputWrapper}>
                     <TextInput
                       style={styles.input}
-                      placeholder="Expiry Date"
+                      placeholder="Phone number"
                       placeholderTextColor="#D1D1D1"
                       value={value}
-                      onChangeText={(text) => onChange(formatDate(text))}
+                      onChangeText={onChange}
                       onBlur={onBlur}
                       keyboardType="numeric"
-                      maxLength={10}
+                      maxLength={14}
                     />
-                    {errors.expiryDate && (
+                    {errors.phone && (
                       <Text style={styles.errorText}>
-                        {errors.expiryDate.message}
+                        {errors.phone.message}
                       </Text>
                     )}
                   </View>
                 )}
               />
-            </View>
 
-            {/* Upload Photo Section */}
-            <View style={styles.uploadSection}>
-              <Text style={styles.uploadTitle}>Upload Your Licence Photo</Text>
-
-              <TouchableOpacity style={styles.uploadArea} onPress={pickImage}>
-                {licenceImage ? (
-                  <Image
-                    source={{ uri: licenceImage }}
-                    style={styles.uploadedImage}
-                  />
-                ) : (
-                  <View style={styles.cameraIconContainer}>
-                    <Ionicons name="camera" size={60} color="#C4C4C4" />
+              {/* Adress Input */}
+              <Controller
+                control={control}
+                name="address"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Address"
+                      placeholderTextColor="#D1D1D1"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType="default"
+                    />
+                    {errors.address && (
+                      <Text style={styles.errorText}>
+                        {errors.address.message}
+                      </Text>
+                    )}
                   </View>
                 )}
-              </TouchableOpacity>
+              />
+
+              {/* ID Input */}
+              <Controller
+                control={control}
+                name="idNumber"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="National Identiy Number"
+                      placeholderTextColor="#D1D1D1"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType="default"
+                    />
+                    {errors.idNumber && (
+                      <Text style={styles.errorText}>
+                        {errors.idNumber.message}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              />
+
+
             </View>
+
+            
 
             {/* Check out Button */}
             <View style={styles.buttonContainer}>
               <Button onPress={handleSubmit(onSubmit)}>
-                {isLoading ? "Saving..." : "Check out"}
+                {isLoading ? "Saving..." : "Next"}
               </Button>
             </View>
           </View>
