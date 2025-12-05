@@ -6,12 +6,14 @@ interface ButtonProps {
   children: React.ReactNode;
   onPress: () => void;
   variant?: "primary" | "secondary";
+  disabled?: boolean;
 }
 
 export default function Button({
   children,
   onPress,
   variant = "primary",
+  disabled = false,
 }: ButtonProps) {
   const textColor =
     variant === "primary"
@@ -42,14 +44,16 @@ export default function Button({
 
   return (
     <Pressable
-      onPress={onPress}
-      style={{
+      onPress={disabled ? undefined : onPress}
+      disabled={disabled}
+      style={({ pressed }) => ({
         ...styles.button,
         backgroundColor:
           variant === "primary"
             ? layoutTheme.colors.background.primary
             : layoutTheme.colors.background.secondary,
-      }}
+        opacity: disabled ? 0.6 : pressed ? 0.8 : 1,
+      })}
     >
       <View style={styles.content}>{renderChildren()}</View>
     </Pressable>

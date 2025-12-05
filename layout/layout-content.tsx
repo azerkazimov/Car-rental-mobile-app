@@ -1,4 +1,12 @@
 import { useTheme } from "@/hooks/use-theme";
+import {
+  removeNotificationListeners,
+  setupNotificationListeners
+} from "@/notifications/listeners";
+import {
+  configureNotificationHandler,
+  registerForPushNotifications
+} from "@/notifications/register";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
@@ -20,6 +28,27 @@ export default function LayoutContent() {
     "Poppins-Thin": require("../assets/fonts/poppins/Poppins-Thin.ttf"),
   });
 
+  // Initialize notification system
+  useEffect(() => {
+    // Configure how notifications are handled when app is in foreground
+    configureNotificationHandler();
+    
+    // Setup listeners for notification events
+    setupNotificationListeners();
+    
+    // Register for push notifications and get token
+    registerForPushNotifications().then((token) => {
+      if (token) {
+        console.log('Push notification system initialized with token:', token);
+      }
+    });
+    
+    // Cleanup listeners on unmount
+    return () => {
+      removeNotificationListeners();
+    };
+  }, []);
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -33,6 +62,7 @@ export default function LayoutContent() {
   if (error) {
     return <Text>Error loading fonts</Text>;
   }
+
   return (
     <>
       <StatusBar
@@ -44,11 +74,23 @@ export default function LayoutContent() {
         <Stack.Screen name="signin/page" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="[brand]/page" options={{ headerShown: false }} />
-        <Stack.Screen name="car/[model]/page" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="car/[model]/page"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="payment/page" options={{ headerShown: false }} />
-        <Stack.Screen name="driving-licence/page" options={{ headerShown: false }} />
-        <Stack.Screen name="personal-data/page" options={{ headerShown: false }} />
-        <Stack.Screen name="payment/confirm/page" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="driving-licence/page"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="personal-data/page"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="payment/confirm/page"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </>
   );

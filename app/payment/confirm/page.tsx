@@ -8,18 +8,22 @@ import { ThemeType } from "@/types/theme-types";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SuccessPayment() {
   const router = useRouter();
   const { colorScheme } = useTheme();
   const styles = getStyles(colorScheme);
+  const [isProcessing, setIsProcessing] = useState(false);
   const {
     selectedCar,
     rentalDays,
     getTotalPrice,
     getServiceFee,
     getFinalTotal,
+    confirmBooking,
+    clearCurrentBooking,
   } = useBookingStore();
 
   // Default values if no car is selected (for demo purposes)
@@ -36,8 +40,59 @@ export default function SuccessPayment() {
   const serviceFee = getServiceFee() || subtotal * 0.05;
   const total = getFinalTotal() || subtotal + serviceFee;
 
-  const handleConfirmPayment = () => {
-    setIsVisible(true);
+  const handleConfirmPayment = async () => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      // Confirm booking and send notification
+      const booking = await confirmBooking();
+      
+      if (booking) {
+        // Show success modal
+        setIsVisible(true);
+        
+        // Show alert with booking confirmation
+        setTimeout(() => {
+          Alert.alert(
+            '🎉 Booking Confirmed!',
+            `Your ${carBrand} ${carModel} has been booked successfully! A notification has been sent to confirm your booking.`,
+            [
+              {
+                text: 'View Bookings',
+                onPress: () => {
+                  clearCurrentBooking();
+                  router.push('/(tabs)');
+                },
+              },
+              {
+                text: 'OK',
+                onPress: () => {
+                  clearCurrentBooking();
+                  router.push('/(tabs)');
+                },
+              },
+            ]
+          );
+        }, 1500);
+      } else {
+        Alert.alert(
+          'Booking Failed',
+          'There was an error confirming your booking. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Error processing booking:', error);
+      Alert.alert(
+        'Error',
+        'An unexpected error occurred. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -156,8 +211,10 @@ export default function SuccessPayment() {
 
         {/* Bottom Button */}
         <View style={styles.buttonContainer}>
-          <Button onPress={handleConfirmPayment}>
-            <Text style={styles.buttonText}>Confirm Payment</Text>
+          <Button onPress={handleConfirmPayment} disabled={isProcessing}>
+            <Text style={styles.buttonText}>
+              {isProcessing ? 'Processing...' : 'Confirm Payment'}
+            </Text>
           </Button>
         </View>
       </View>
