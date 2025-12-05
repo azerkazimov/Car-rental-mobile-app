@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
@@ -34,6 +34,7 @@ export default function DrivingLicenceForm() {
   const {
     control,
     handleSubmit,
+    watch,
     setValue,
     formState: { errors },
   } = useForm<DrivingLicenceSchemaType>({
@@ -41,7 +42,7 @@ export default function DrivingLicenceForm() {
     defaultValues: {
       licenceNumber: "",
       expiryDate: "",
-      licencePhoto: null,
+      licencePhoto: "",
     },
   });
 
@@ -162,6 +163,18 @@ export default function DrivingLicenceForm() {
     }
   };
 
+  const getDrivingLicence = async ()=>{
+    const drivingLicence = JSON.parse(await AsyncStorage.getItem("drivingLicence") || "{}");
+    if(drivingLicence){
+      setValue("licenceNumber", drivingLicence.licenceNumber || "");
+      setValue("expiryDate", drivingLicence.expiryDate || "");
+      setValue("licencePhoto", drivingLicence.licencePhoto || null);
+    }
+  }
+  useEffect(()=>{
+    getDrivingLicence();
+  }, []);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -236,9 +249,9 @@ export default function DrivingLicenceForm() {
               <Text style={styles.uploadTitle}>Upload Your Licence Photo</Text>
 
               <TouchableOpacity style={styles.uploadArea} onPress={pickImage}>
-                {licenceImage ? (
+                {licenceImage || watch("licencePhoto") ? (
                   <Image
-                    source={{ uri: licenceImage }}
+                    source={{ uri: licenceImage || watch("licencePhoto") || "" }}
                     style={styles.uploadedImage}
                   />
                 ) : (
